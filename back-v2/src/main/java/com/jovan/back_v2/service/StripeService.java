@@ -15,6 +15,7 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class StripeService {
 
+	@Value("${stripe.api.key}")
 	private String stripeSecretKey;
 
 	@PostConstruct
