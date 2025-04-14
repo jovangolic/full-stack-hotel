@@ -72,97 +72,9 @@ The project uses a docker-compose.yml file to define and manage Docker container
     Backend: The Spring Boot application running in a Docker container.
 
     Frontend: The React application running in a Docker container.
-# docker-compose.yml file:
 
-services:
-  frontend:
-    build:
-      context: ./hotel-front
-    image: hotel-front-image
-    ports:
-      - "5173:80"
-    depends_on:
-      - backend
-    networks:
-      - hotel-network
 
-  backend:
-    build:
-      context: ./back-v2
-    image: back-v2-image
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-docker:3306/hotel_database_docker
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - hotel-network
-
-  mysql:
-    container_name: mysql-docker
-    image: mysql:8.0
-    environment:
-      MYSQL_DATABASE: hotel_database_docker
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3308:3306"
-    volumes:
-      - mysql-docker:/var/lib/mysql
-    networks:
-      - hotel-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  mysql-docker:
-
-networks:
-  hotel-network:
-
-# Backend Dockerfile (Spring Boot)
-
-backend/Dockerfile
-FROM openjdk:17-jdk-buster
-
-WORKDIR /app
-
-COPY target/back-v2-0.0.1-SNAPSHOT.jar /app/back-v2.jar
-
-ENTRYPOINT ["java", "-jar", "/app/back-v2.jar"]
-
-# Frontend Dockerfile (React)
-
-frontend/Dockerfile
-FROM node:20-alpine3.16 AS build
-WORKDIR /app
-# Kopiranje package.json i package-lock.json
-COPY package*.json ./
-RUN npm install
-
-# Kopiranje svih fajlova
-COPY . .
-# Build aplikacije
-RUN npm run build
-
-# Postavljanje Nginx-a za serviranje statičkog sadržaja
-FROM nginx:alpine
-COPY --from=0 /app/dist /usr/share/nginx/html
-
-# 6. Kopiraj custom nginx config ako treba (opciono)
-# COPY nginx.conf /etc/nginx/nginx.conf
-
-# Expose port 80 za HTTP
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-
-#hotel-fronted je naziv kontejnera
+#hotel-fronted is the name of the container.
 
 ## Development Instructions
 
@@ -170,7 +82,28 @@ CMD ["nginx", "-g", "daemon off;"]
 
     Backend Development: For backend development, use mvn spring-boot:run or ./mvnw spring-boot:run to run the application in Spring Boot environment.
 
-##Authors
+## Full-Stack-Hotel App
+
+## Running the application with Docker (Steps):
+
+1. Log in to Docker Hub: First, you need to log in to Docker Hub using the command: docker login. Enter your Docker Hub credentials when prompted.
+2. Pull the Docker images: Pull the necessary images using the following commands:
+    - For the MySQL database: docker pull jovangolic/full-stack-hotel:database
+    - For the backend: docker pull jovangolic/full-stack-hotel:backend-part
+    - For the frontend: docker pull jovangolic/full-stack-hotel:frontend-part
+
+3. Navigate to the project directory (use Visual Studio Code, Eclipse or Intellij IDEA, and its terminal): Go to the root directory of the project, where the docker-compose.yml file is located. Then, in your terminal (e.g., VSCode terminal), run the following command:
+      -  docker-compose up
+      - or, to rebuild images before running:   docker-compose up --build
+4. Access the application: Once the application is started, use the following URLs to access the application:
+
+    Backend (for testing with Postman or other tools): http://localhost:8080
+
+    Frontend (open in browser): http://localhost:5173
+6. Shut down the application: To shut down the application, use the following Docker command:
+    - docker-compose down
+
+##Author
 
 # Jovan Golić - Author of this project.
 
