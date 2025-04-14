@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 # Environment variables
+#/back-v2/.env
 .env
 
 ### STS ###
