@@ -15,19 +15,18 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class StripeService {
 
-	@Value("${stripe.api.key}")
 	private String stripeSecretKey;
-	
+
 	@PostConstruct
 	public void init() {
 		Stripe.apiKey = stripeSecretKey;
 	}
-	
-	public String createPaymentIntent(Double amount, String currency) throws StripeException{
+
+	public String createPaymentIntent(Double amount, String currency) throws StripeException {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("amount", amount);
 		params.put("currency", currency);
-		params.put("automatic_payment_methods", Map.of("enabled",true));
+		params.put("automatic_payment_methods", Map.of("enabled", true));
 		PaymentIntent paymentIntent = PaymentIntent.create(params);
 		return paymentIntent.getClientSecret();
 	}
