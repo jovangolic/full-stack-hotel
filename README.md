@@ -85,6 +85,8 @@ The project uses a docker-compose.yml file to define and manage Docker container
 ## Full-Stack-Hotel App
 
 ## Running the application with Docker (Steps):
+Important: Clone the repository: 
+https://github.com/jovangolic/full-stack-hotel.git
 
 1. Log in to Docker Hub: First, you need to log in to Docker Hub using the command: docker login. Enter your Docker Hub credentials when prompted.
 2. Pull the Docker images: Pull the necessary images using the following commands:
